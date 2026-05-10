@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InstaGrowth - Grow Your Instagram Followers</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .glass { backdrop-filter: blur(10px); }
+        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+    </style>
+</head>
+<body class="min-h-screen gradient-bg text-white font-sans">
+    <!-- Header -->
+    <header class="glass backdrop-blur-md bg-white/20 sticky top-0 z-50 shadow-lg">
+        <div class="max-w-6xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-chart-line text-2xl text-pink-400"></i>
+                    <h1 class="text-2xl font-bold">InstaGrowth</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span id="followerCount" class="bg-pink-500 px-3 py-1 rounded-full text-sm font-bold">0</span>
+                    <button onclick="toggleTheme()" class="p-2 hover:bg-white/20 rounded-lg">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-6xl mx-auto px-6 py-12 space-y-12">
+        <!-- Stats Dashboard -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="glass bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/20">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm opacity-75">Daily Engagement</p>
+                        <p id="engagementRate" class="text-3xl font-bold">12.5%</p>
+                    </div>
+                    <i class="fas fa-heart text-3xl text-pink-400"></i>
+                </div>
+            </div>
+            <div class="glass bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/20">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm opacity-75">Growth Rate</p>
+                        <p id="growthRate" class="text-3xl font-bold text-green-400">+247</p>
+                    </div>
+                    <i class="fas fa-arrow-up text-3xl text-green-400"></i>
+                </div>
+            </div>
+            <div class="glass bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/20">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm opacity-75">Best Time</p>
+                        <p id="bestTime" class="text-3xl font-bold">8 PM</p>
+                    </div>
+                    <i class="fas fa-clock text-3xl text-blue-400"></i>
+                </div>
+            </div>
+            <div class="glass bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/20">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm opacity-75">Hashtag Score</p>
+                        <p id="hashtagScore" class="text-3xl font-bold text-yellow-400">92</p>
+                    </div>
+                    <i class="fas fa-hashtag text-3xl text-yellow-400"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Content Generator -->
+            <div class="glass bg-white/10 backdrop-blur-md p-8 rounded-3xl border border-white/20">
+                <h2 class="text-2xl font-bold mb-6 flex items-center">
+                    <i class="fas fa-magic mr-3 text-purple-300"></i>
+                    Content Ideas
+                </h2>
+                <div class="space-y-4">
+                    <select id="nicheSelect" class="w-full p-3 bg-white/20 rounded-xl border border-white/30 focus:outline-none focus:ring-2 focus:ring-purple-400">
+                        <option value="">Select your niche...</option>
+                        <option value="fitness">Fitness</option>
+                        <option value="food">Food</option>
+                        <option value="travel">Travel</option>
+                        <option value="fashion">Fashion</option>
+                        <option value="business">Business</option>
+                        <option value="photography">Photography</option>
+                    </select>
+                    <textarea id="contentPrompt" class="w-full p-4 bg-white/20 rounded-xl border border-white/30 focus:outline-none focus:ring-2 focus:ring-purple-400 resize-vertical h-24" placeholder="Describe your style or add details..."></textarea>
+                    <button onclick="generateContent()" class="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 p-4 rounded-xl font-bold text-lg transition-all duration-300 transform hover:scale-105">
+                        <i class="fas fa-sparkles mr-2"></i>Generate 5 Post Ideas
+                    </button>
+                    <div id="contentIdeas" class="space-y-3 mt-4"></div>
+                </div>
+            </div>
+
+            <!-- Hashtag Generator -->
+            <div class="glass bg-white/10 backdrop-blur-md p-8 rounded-3xl border border-white/20">
+                <h2 class="text-2xl font-bold mb-6 flex items-center">
+                    <i class="fas fa-hashtag mr-3 text-yellow-400"></i>
+                    Smart Hashtags
+                </h2>
+                <div class="space-y-4">
+                    <input id="hashtagInput" type="text" class="w-full p-3 bg-white/20 rounded-xl border border-white/30 focus:outline-none focus:ring-2 focus:ring-yellow-400" placeholder="Enter your main topic (e.g., coffee, yoga)">
+                    <button onclick="generateHashtags()" class="w-full bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 p-4 rounded-xl font-bold text-lg transition-all duration-300 transform hover:scale-105">
+                        <i class="fas fa-search mr-2"></i>Generate Hashtags
+                    </button>
+                    <div id="hashtagResults" class="mt-4 space-y-2 max-h-48 overflow-y-auto"></div>
+                    <div class="text-xs opacity-75 mt-4 p-3 bg-white/10 rounded-lg">
+                        💡 Use 5-11 hashtags per post. Mix popular + niche tags.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Growth Challenges & Posting Schedule -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Daily Challenges -->
+            <div class="glass bg-white/10 backdrop-blur-md p-8 rounded-3xl border border-white/20">
+                <h2 class="text-2xl font-bold mb-6 flex items-center">
+                    <i class="fas fa-trophy mr-3 text-green-400"></i>
+                    Daily Challenges
+                </h2>
+                <div id="challenges" class="space-y-4"></div>
+                <button onclick="getNewChallenges()" class="mt-6 w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 p-4 rounded-xl font-bold">
+                    <i class="fas fa-sync-alt mr-2"></i>Refresh Challenges
+                </button>
+            </div>
+
+            <!-- Posting Schedule -->
+            <div class="glass bg-white/10 backdrop-blur-md p-8 rounded-3xl border border-white/20">
+                <h2 class="text-2xl font-bold mb-6 flex items-center">
+                    <i class="fas fa-calendar mr-3 text-blue-400"></i>
+                    Post Schedule
+                </h2>
+                <canvas id="scheduleChart" height="200"></canvas>
+                <div class="mt-6 grid grid-cols-2 md:grid-cols-7 gap-2 text-center">
+                    <div class="p-2 bg-white/20 rounded-lg font-bold">Mon</div>
+                    <div class="p-2 bg-white/20 rounded-lg font-bold">Tue</div>
+                    <div class="p-2 bg-white/20 rounded-lg font-bold">Wed</div>
+                    <div class="p-2 bg-white/20 rounded-lg font-bold">Thu</div>
+                    <div class="p-2 bg-white/20 rounded-lg font-bold">Fri</div>
+                    <div class="p-2 bg-white/20 rounded-lg font-bold">Sat</div>
+                    <div class="p-2 bg-white/20 rounded-lg font-bold">Sun</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Audit -->
+        <div class="glass bg-white/10 backdrop-blur-md p-8 rounded-3xl border border-white/20">
+            <h2 class="text-2xl font-bold mb-6 flex items-center">
+                <i class="fas fa-searchengin mr-3 text-indigo-400"></i>
+                Profile Audit
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-sm font-bold mb-2">Username</label>
+                    <input id="username" type="text" class="w-full p-3 bg-white/20 rounded-xl border border-white/30 focus:outline-none focus:ring-2 focus:ring-indigo-400" placeholder="@yourusername">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold mb-2">Bio Keywords</label>
+                    <input id="bioKeywords" type="text" class="w-full p-3 bg-white/20 rounded-xl border border-white/30 focus:outline-none focus:ring-2 focus:ring-indigo-400" placeholder="coffee, barista, morning">
+                </div>
+            </div>
+            <button onclick="auditProfile()" class="mt-6 bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 p-4 rounded-xl font-bold w-full">
+                <i class="fas fa-clipboard-check mr-2"></i>Run Profile Audit
+            </button>
+            <div id="auditResults" class="mt-6 space-y-4 hidden"></div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize app
+        let followerCount = 12500;
+        let chart;
+
+        // Update stats periodically
+        setInterval(() => {
+            updateStats();
+        }, 5000);
+
+        function updateStats() {
+            document.getElementById('followerCount').textContent = followerCount.toLocaleString();
+            document.getElementById('engagementRate').textContent = (8 + Math.random() * 8).toFixed(1) + '%';
+            document.getElementById('growthRate').textContent = '+' + Math.floor(50 + Math.random() * 200);
+            document.getElementById('bestTime').textContent = ['8 PM', '7 PM', '9 AM', '6 PM'][Math.floor(Math.random() * 4)];
+            document.getElementById('hashtagScore').textContent = Math.floor(85 + Math.random() * 15);
+        }
+
+        // Content Generator
+        function generateContent() {
+            const niche = document.getElementById('nicheSelect').value;
+            const prompt = document.getElementById('contentPrompt').value;
+            
+            if (!niche && !prompt) {
+                alert('Please select a niche or add a prompt!');
+                return;
+            }
+
+            const ideas = generateContentIdeas(niche, prompt);
+            const container = document.getElementById('contentIdeas');
+            container.innerHTML = ideas.map((idea, i) => `
+                <div class="p-4 bg-white/20 backdrop-blur-md rounded-2xl border border-white/30 hover:bg-white/30 transition-all duration-300 group">
+                    <div class="flex items-start justify-between mb-2">
+                        <span class="bg-gradient-to-r from-purple-500 to-pink-500 px-3 py-1 rounded-full text-xs font-bold">${i+1}</span>
+                        <button onclick="copyToClipboard('${idea.replace(/'/g, "\\'")}')" class="opacity-0 group-hover:opacity-100 p-1 hover:bg-white/50 rounded-lg transition-opacity">
+                            <i class="fas fa-copy text-sm"></i>
+                        </button>
+                    </div>
+                    <p class="font-medium">${idea}</p>
+                </div>
+            `).join('');
+        }
+
+        function generateContentIdeas(niche, prompt) {
+            const templates = {
+                fitness: [
+                    "Before/after transformation photos with your progress stats",
+                    "Quick 60-second workout demo - show the exercise + results",
+                    "Day in the life of your fitness routine (morning coffee to night stretch)",
+                    "Myth busting: Common fitness mistakes you're probably making",
+                    "What I eat in a day to stay lean (realistic portions)"
+                ],
+                food: [
+                    "3-ingredient recipe that takes under 10 minutes",
+                    "Taste test: Store-bought vs homemade [popular item]",
+                    "Kitchen hack that changed how I cook forever",
+                    "Plate presentation that makes basic food look gourmet",
+                    "Failed recipe turned success story (with the fix)"
+                ],
+                travel: [
+                    "Hidden gem in [city] that Google Maps doesn't know about",
+                    "24 hours in [destination] on $50 budget",
+                    "Packing list that fits in a carry-on (with photos)",
+                    "Local's guide: Where to eat/sleep/adventure in [place]",
+                    "Biggest travel mistake I made (and how to avoid it)"
+                ]
+            };
+
+            return templates[niche] || [
+                `Carousel post: "${prompt}" - 5 tips/tricks/hacks`,
+                `Reel: 15-second "${prompt}" tutorial`,
+                `Story series: Day in the life doing "${prompt}"`,
+                `Before/after "${prompt}" transformation`,
+                `Top 3 "${prompt}" mistakes to avoid`
+            ];
+        }
+
+        // Hashtag Generator
+        function generateHashtags() {
+            const topic = document.getElementById('hashtagInput').value.toLowerCase();
+            if (!topic) return;
+
+            const hashtags = generateTopicHashtags(topic);
+            const container = document.getElementById('hashtagResults');
+            container.innerHTML = `
+                <div class="grid grid-cols-3 md:grid-cols-4 gap-2 p-3 bg-white/10 rounded-xl">
+                    ${hashtags.map((set, i) => `
+                        <div class="p-3 bg-gradient-to-br from-yellow-400/20 to-orange-400/20 rounded-xl border border-yellow-400/30 hover:scale-105 transition-all">
+                            <p class="font-mono text-sm mb-2">Set ${i+1}</p>
+                            <div class="flex flex-wrap gap-1">
+                                ${set.map(h => `<span class="text-xs bg-white/20 px-2 py-1 rounded-full">#${h}</span>`).join('')}
+                            </div>
+                            <p class="text-xs mt-2 opacity-75">${set.reduce((a,b)=>a+b.length,0)} chars</p>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function generateTopicHashtags(topic) {
+            const hashtagData = {
+                coffee: [['coffee', 'coffeelover', 'coffeeaddict', 'morningcoffee', 'coffeegram', 'coffeeholic', 'barista', 'coffeebreak', 'coffeevibes']],
+                fitness: [['fitness', 'workout', 'gymlife', 'fitspo', 'fitnessmotivation', 'healthylifestyle', 'fitfam', 'gymmotivation', 'workoutroutine']],
+                yoga: [['yoga', 'yogini', 'yogalife', 'yogapose', 'yogainspiration', 'yogateacher', 'mindfulness', 'yogapractice', 'yogalover']]
+            };
+
+            return hashtagData[topic] || [[
+                topic, `${topic}love`, `${topic}daily`, `${topic}vibes`, 
+                `${topic}tips`, `love${topic}`, `${topic}life`, `${topic}gram`
+            ]];
+        }
+
+        // Daily Challenges
+        function getNewChallenges() {
+            const challenges = [
+                "✅ Comment meaningfully on 20 accounts in your niche",
+                "📸 Post 1 Story with a question sticker",
+                "💬 DM 5 people who engaged with your content",
+                "🔄 Repost 3 niche accounts (give credit)",
+                "🎥 Create 1 Reel (15-30 seconds)",
+                "📊 Analyze yesterday's top performing post",
+                "👥 Collaborate: Tag 3 creators in Stories"
+            ];
+
+            const shuffled = challenges.sort(() => Math.random() - 0.5).slice(0,5);
+            document.getElementById('challenges').innerHTML = shuffled.map(challenge => `
+                <div class="flex items-center p-4 bg-white/20 backdrop-blur-md rounded-2xl border border-white/30 hover:bg-white/30 transition-all">
+                    <input type="checkbox" class="w-5 h-5 bg-white rounded mr-3">
+                    <span>${challenge}</span>
+                </div>
+            `).join('');
+        }
+
+        // Chart
+        function initChart() {
+            const ctx = document.getElementById('scheduleChart').getContext('2d');
+            chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['12AM', '3AM', '6AM', '9AM', '12PM', '3PM', '6PM', '9PM'],
+                    datasets: [{
+                        label: 'Engagement',
+                        data: [10, 15, 25, 45, 60, 75, 90, 85],
+                        borderColor: '#ec4899',
+                        backgroundColor: 'rgba(236, 72, 153, 0.2)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { display: false },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        // Profile Audit
+        function auditProfile() {
+            const username = document.getElementById('username').value;
+            const keywords = document.getElementById('bioKeywords').value;
+            
+            if (!username) {
+                alert('Please enter your username!');
+                return;
+            }
+
+            const results = document.getElementById('auditResults');
+            results.classList.remove('hidden');
+            results.innerHTML = `
+                <div class="space-y-4">
+                    <div class="p-4 bg-emerald-500/20 border border-emerald-500/40 rounded-2xl">
+                        <h3 class="font-bold text-lg mb-2">✅ Strengths</h3>
+                        <ul class="space-y-1 text-sm">
+                            <li><i class="fas fa-check text-emerald-400 mr-2"></i>Consistent branding</li>
+                            <li><i class="fas fa-check text-emerald-400 mr-2"></i>Good content quality</li>
+                            <li><i class="fas fa-check text-emerald-400 mr-2"></i>Active engagement</li>
+                        </ul>
+                    </div>
+                    <div class="p-4 bg-amber-500/20 border border-amber-500/40 rounded-2xl">
+                        <h3 class="font-bold text-lg mb-2">⚠️ Improvements</h3>
+                        <ul class="space-y-1 text-sm">
+                            <li><i class="fas fa-lightbulb text-amber-400 mr-2"></i>Add CTA to bio</li>
+                            <li><i class="fas fa-lightbulb text-amber-400 mr-2"></i>Optimize keywords: ${keywords || 'coffee, barista'}</li>
+                            <li><i class="fas fa-lightbulb text-amber-400 mr-2"></i>Profile pic: Use face + smile</li>
+                        </ul>
+                    </div>
+                    <div class="text-center p-4 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-2xl font-bold text-lg">
+                        Overall Score: <span class="text-2xl">87/100</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Utilities
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                // Visual feedback
+                const btn = event.target.closest('button');
+                const original = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check text-green-400"></i>';
+                setTimeout(() => btn.innerHTML = original, 1500);
+            });
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('bg-gray-900');
+        }
+
+        // Initialize
+        updateStats();
+        getNewChallenges();
+        initChart();
+    </script>
+</body>
+</html>
